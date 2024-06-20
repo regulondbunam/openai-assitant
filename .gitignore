@@ -4,4 +4,4 @@ phrases.csv
 phrases.tsv
 error.txt
 **/__pycache__/
-**.env
+.dev.env

@@ -12,10 +12,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: flask-app
-    volumes:
-      - .:/app
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/chatbot
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=chatbot
     depends_on:
       - mongodb
     ports:
