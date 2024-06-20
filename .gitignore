@@ -5,6 +5,3 @@ phrases.tsv
 error.txt
 **/__pycache__/
 **.env
-**/promotores_phrases/
-chroma_db.rar
-**/chroma_db/

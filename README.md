@@ -23,8 +23,7 @@ This manual provides comprehensive instructions for the installation, configurat
 ### server:
 - Operating System: Linux (Ubuntu 18.04+ recommended), Windows 10+, or macOS 10.14+.
 - Python 3.9 or higher.
-- A web server like Nginx or Apache (optional, for production deployment).
-- MongoDB for database services.
+- [Docker](https://docs.docker.com/engine/install) 
 
 ## Installation
 
@@ -32,53 +31,12 @@ This manual provides comprehensive instructions for the installation, configurat
 You need to download this repository, in its master branch,
 
 ```shell
-git clone https://github.com/regulondbunam/regulondb-gpt.git
-cd regulondb-gpt/openai_assistant
+git clone https://github.com/regulondbunam/openai-assitant.git
 ```
 
 You can also download the zip file from the repository and unzip it to a designated location
 
-**Step 2 install venv**
-1. install venv python library
-```shell
-sudo apt install python3-venv
-```
-on Windows
-```sell
-pip install virtualenv
-```
-
-2. Creates the virtual runtime environment
-```shell
-python3 -m venv venv
-```
-on Windows
-```shell
-virtualenv venv
-
-```
-
-**Step 3 activate venv**
-1. Activate the virtual environment:
-- On macOS/Linux:
-```shell
-. venv/bin/activate
-```
-
-- On Windows:
-```shell
-./venv/Scripts/activate
-```
-On windows you need to modify about_Execution_Policies to allow the execution of the venv script, visit https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2.
-for more information
-
-**Step 4 install project dependencies**
-
-```shell
-pip install -r requirements.txt
-```
-
-**Step 5 configuration**
+**Step 2 configuration**
 
 At the **app** folder, you will find the .envExample file where you will find the information to declare the environment variables so that the application can connect to mongoDB and OpenAI.
 
@@ -87,20 +45,31 @@ duplicate the .envEXAMPLE file and rename it to .env and add the information req
 ``` 
 #rename this file to '.env' when the fields have been filled
 # OPENAI_API_KEY = "API KEY of OpenAI"
+# MONGODB_CONNECTION_URI = "your mongodb connection uri"
+# DATABASE_NAME = "your database name"
+# ASSISTANT_ID = "your assistant ID of openAI"
 
-OPENAI_API_KEY=your_openai_api_key
-MONGODB_CONNECTION_URI=your_mongodb_connection_uri
-DATABASE_NAME=your_database_name
-ASSISTANT_ID=your_assistant_id_of_openai
+OPENAI_API_KEY=<your_openai_api_key>
+MONGODB_CONNECTION_URI="mongodb//localhost:27017"
+DATABASE_NAME="chatbot"
+ASSISTANT_ID=<your_assistant_id_of_openai>
 ```
+or you can create the file .env with the next commands but first change the value of the vars:
+```shell
+echo "OPENAI_API_KEY=<your_openai_api_key>" >> .env
+echo 'MONGODB_CONNECTION_URI="mongodb://localhost:27017"' >> .env
+echo 'DATABASE_NAME="chatbot"' >> .env
+echo "ASSISTANT_ID=<your_assistant_id_of_openai>" >> .env
+``` 
 
-
-**Step 6 start service**
+**Step 3 start service**
 
 1. Run the Flask application:
 ```shell
-gunicorn --bind 0.0.0.0:8000 wsgi:app
+sudo docker compose up -d --build
 ```
-2. Access the application by navigating to http://127.0.0.1:5000 in your web browser.
+The -d in the command sudo docker compose up -d --build stands for "detached mode," which runs the containers in the background.
+
+2. Access the application by navigating to http://0.0.0.0 in your web browser.
 
 Note: For production deployment, it is recommended to use a production-ready web server like Nginx or Apache and configure it to serve the Flask application using a WSGI server like Gunicorn. Additionally, secure the application using HTTPS.
