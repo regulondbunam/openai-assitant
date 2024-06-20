@@ -1,0 +1,33 @@
+{% macro render_message(message, evaluation_form, thread_id) %}
+    <div class="message-container">
+        <img src="https://blueonepro.ae/wp-content/uploads/2024/02/user-icon-2048x2048-ihoxz4vq.png" alt="User Avatar" class="user-avatar">
+        <h5 class="mb-1">You</h5>
+        <div class="user-message">
+            <p>{{ message[0].content[0].text.value }}</p>
+        </div>
+    </div>
+    <div class="message-container">
+        <img src="https://lifeboat.com/images/sblogo.jpg" alt="Bot Avatar" class="bot-avatar">
+        <h5 class="mb-1">RegulonGPT</h5>
+        <div class="bot-message">
+            {% set content = message[1].content[0].text.value | replace('\n', '<br>') | safe %}
+            <p id="response-bot">{{ content | safe }}</p>
+            {% if message[1].metadata.rating %}
+                <p>Your rating: {{ message[1].metadata.rating }}</p>
+                <p>Your comment: {{ message[1].metadata.userComment }}</p>
+            {% else %}
+                <div class="validation">
+                    <form action="{{ url_for('get_validation', message_id=message[1].id, thread_id=thread_id) }}" method="post" class="form" role="form">
+                        <div class="form-group  required"><label class="control-label" for="rating">Calificación:</label>
+                            <input class="form-control" id="rating" max="5" min="1" name="rating" required="" type="number" value="5">
+                        </div>
+                        <div class="form-group "><label class="control-label" for="comment">Comentario:</label>
+                            <input class="form-control" id="comment" name="comment" type="text" value="">
+                        </div>
+                          <input class="btn btn-default" id="submit" name="submit" type="submit" value="Enviar">
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

@@ -1,0 +1,10 @@
+flask
+flask-bootstrap
+flask-wtf
+flask-testing
+flask-login
+python-dotenv
+openai
+gunicorn
+pymongo
+requests

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import 'macros.html' as macros %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}
+    {{ super() }}
+    Chatbot
+{% endblock %}
+
+{% block content %}
+    <div class="content position-fixed d-flex flex-column align-items-center justify-content-center w-100 h-100">
+        <h1>Chatbot experimental</h1>  
+        {% if messages %}
+            <div class="chat-container">
+                {% for message in messages %}
+                {{ macros.render_message(message, evaluation_form) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="prompt-text navbar-fixed-bottom">
+            {{ wtf.quick_form(message_form) }}
+        </div>
+    </div>
+{% endblock  %}
