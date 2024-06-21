@@ -1,8 +1,5 @@
 from app.tools.get_database import get_database
 
-db = get_database()
-collection = db.users
-
 def get_users():
     """
     Retrieve all users from the collection.
@@ -11,7 +8,8 @@ def get_users():
         A cursor object containing all the users in the collection.
     """
     try:
-        return collection.find()
+        db = get_database()
+        return db.users.find()
     except Exception as e:
         print(f"An error occurred while retrieving users: {e}")
         return None
@@ -28,7 +26,8 @@ def get_user(user_id):
               Returns None if no user is found with the given ID.
     """
     try:
-        return collection.find_one({'user': user_id})
+        db = get_database()
+        return db.users.find_one({'user': user_id})
     except Exception as e:
         print(f"An error occurred while retrieving user: {e}")
         return None
@@ -44,7 +43,8 @@ def put_user(user_data):
         None
     """        
     try:
-        collection.insert_one({"user": user_data.username, "password": user_data.password})
+        db = get_database()
+        return db.users.insert_one({"user": user_data.username, "password": user_data.password})
 
     except Exception as e:
         print(f"An error occurred while inserting user: {e}")

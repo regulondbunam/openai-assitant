@@ -18,11 +18,8 @@ def get_database():
 
    try:
       client = MongoClient(MONGODB_CONNECTION_URI)
+      cliente = client["chatbot"]
    except Exception as e:
       raise Exception(f"Failed to connect to MongoDB: {str(e)}")
 
-   return client["chatbot"]
-  
-if __name__ == "__main__":   
-  
-   dbname = get_database()
+   return cliente

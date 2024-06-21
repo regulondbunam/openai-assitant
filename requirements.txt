@@ -8,3 +8,4 @@ openai
 gunicorn
 pymongo
 requests
+pytest
