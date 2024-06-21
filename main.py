@@ -58,6 +58,7 @@ def api():
     - If message_id, rating, and comment are provided, returns the evaluation response.
     """
     try:
+        thread_id = request.args.get('thread_id')
         message = request.args.get('message')
         message_id = request.args.get('message_id')
         comment = request.args.get('comment')
@@ -65,9 +66,9 @@ def api():
         response = None
 
         if message:
-            response = send_message(message)
+            response = send_message(message, thread_id)
         elif message_id and rating and comment:
-            response = evaluate_message(message_id, str(rating), comment)
+            response = evaluate_message(message_id, str(rating), comment, thread_id)
 
         return response
     except Exception as e:
@@ -128,18 +129,12 @@ def get_validation():
     try:
         message_id = request.args.get('message_id')
         thread_id = request.args.get('thread_id')
-        evaluation_form = EvaluationForm()
-
-        if evaluation_form.validate_on_submit():
-            rating = evaluation_form.rating.data
-            comment = evaluation_form.comment.data
-            if thread_id:
-                evaluate_message(message_id, str(rating), comment, thread_id)
-                return redirect(url_for('view_thread',thread_id=thread_id))
-            else:
-                url = url_for('api', message_id=message_id, rating=rating, comment=comment, _external=True, _scheme='http')
-                response = requests.get(url)
-                return redirect(url_for('chat_ui'))
+        rating = request.form['rating']
+        comment = request.form['comment']
+        
+        url = url_for('api', thread_id=thread_id, message_id=message_id, rating=str(rating), comment=comment, _external=True, _scheme='http')
+        response = requests.get(url)
+        return redirect(url_for('view_thread',thread_id=thread_id))
             
     except Exception as e:
         print(str(e))
