@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import LoginForm
 
 from . import auth
-from app.mongodb_service import get_user, put_user
+from app.services.mongodb_service import get_user, put_user
 from app.models import UserModel, UserData
 
 @auth.route('/login', methods=['GET', 'POST'])

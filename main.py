@@ -106,6 +106,32 @@ def chat_user():
     }
     return render_template('chat_user.html', **context)
 
+@app.route('/chatbot/eval', methods=['GET','POST'])
+def get_validation():
+    """
+    Endpoint for evaluating a chatbot message and submitting the evaluation form.
+    Args:
+        message_id (str): The ID of the message to be evaluated.
+        thread_id (str): The ID of the thread containing the message.
+    
+    Returns:
+        redirect: Redirects to the appropriate page based on the evaluation form submission.
+    """
+    message_id = request.args.get('message_id')
+    thread_id = request.args.get('thread_id')
+    evaluation_form = EvaluationForm()
+
+    if evaluation_form.validate_on_submit():
+        rating = evaluation_form.rating.data
+        comment = evaluation_form.comment.data
+        if thread_id:
+            evaluate_message(message_id, str(rating), comment, thread_id)
+            return redirect(url_for('view_thread',thread_id=thread_id))
+        else:
+            url = url_for('api', message_id=message_id, rating=rating, comment=comment, _external=True, _scheme='http')
+            response = requests.get(url)
+            return redirect(url_for('chat_ui'))
+        
 @app.route('/new_thread', methods=['POST'])
 def new_thread():
     """

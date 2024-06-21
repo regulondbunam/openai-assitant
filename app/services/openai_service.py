@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-from app.tools.pymongo_get_database import get_database
+from app.tools.get_database import get_database
 
 load_dotenv()
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']

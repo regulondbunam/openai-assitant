@@ -1,17 +1,7 @@
-import os
-from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+from app.tools.get_database import get_database
 from bson import ObjectId
-
-load_dotenv()
-MONGODB_URI = os.environ["MONGODB_CONNECTION_URI"]
-DATABASE_NAME = os.environ["DATABASE_NAME"]
-
-# Set the Stable API version when creating a new client
-client = MongoClient(MONGODB_URI, server_api=ServerApi('1'))
                           
-db = client[DATABASE_NAME]
+db = get_database()
 collection = db.users
 
 def get_users():

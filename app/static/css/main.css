@@ -25,6 +25,10 @@ img {
     white-space: normal; 
     word-wrap: break-word;
 }
+.prompt-button:hover {
+    background-color: #e6e6e6
+}
+
 .chat-container {
     overflow-y: auto;
     margin-left: auto;

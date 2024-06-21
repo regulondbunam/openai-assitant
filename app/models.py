@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 
-from .mongodb_service import get_user
+from .services.mongodb_service import get_user
 
 class UserData:
     """

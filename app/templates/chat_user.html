@@ -17,38 +17,50 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% if new_chat %}
+        {% if new_chat or (not thread_id) %}
             <div class="container vertical-center">
                 <div class="row text-center">
                     <form action="{{ url_for('select_prompt') }}" method="POST">
                         <div class="col-xs-12 col-sm-4">
                             <p>
-                                <button type="submit" name="prompt" value="¿Cuál es el ID del promotor mplp?" class="btn btn-default prompt-button">¿Cuál es el ID del promotor mplp?</button>
+                                <button type="submit" name="prompt" value="¿Cuál es el ID del promotor mplp?" class="btn-default prompt-button border border-black">¿Cuál es el ID del promotor mplp?</button>
                             </p>
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <p>
-                                <button type="submit" name="prompt" value="Dame todos los nombres de los promotores regulados por el sigma factor sigma54" class="btn btn-default prompt-button">Dame todos los nombres de los promotores regulados por el sigma factor sigma54</button>
+                                <button type="submit" name="prompt" value="¿Cual es la secuencia del promotor araC?" class="btn-default prompt-button border border-black">¿Cual es la secuencia del promotor araC?</button>
                             </p>
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <p>
-                                <button type="submit" name="prompt" value="¿Cuál es la distancia del primer gen al promotor repp?" class="btn btn-default prompt-button">¿Cuál es la distancia del primer gen al promotor repp?</button>
+                                <button type="submit" name="prompt" value="¿Cuál es la distancia del primer gen al promotor repp?" class="btn-default prompt-button border border-black">¿Cuál es la distancia del primer gen al promotor repp?</button>
                             </p>
                         </div>
                     </form>
                 </div>
             </div>
         {% endif %}
-        <div id="prompt-div" class="prompt-text navbar-fixed-bottom">
-            <form action="{{ url_for('send_message_thread',thread_id=thread_id) }}" method="post" class="form" role="form">
-                <div class="form-group  required">
-                    <label class="control-label" for="prompt">This is an experimental generative AI chatbot. All information should be verified prior to use.</label>
-                    <input class="form-control" id="prompt" name="prompt" placeholder="Preguntame lo que quieras" required="" type="text" value="">
-                </div>
-                <input class="btn btn-default" id="submit" name="submit" type="submit" value="Enter">
-            </form>
-        </div>
+        {% if thread_id %}
+            <div id="prompt-div" class="prompt-text navbar-fixed-bottom">
+                <form action="{{ url_for('send_message_thread',thread_id=thread_id) }}" method="post" class="form" role="form">
+                    <div class="form-group  required">
+                        <label class="control-label" for="prompt">This is an experimental generative AI chatbot. All information should be verified prior to use.</label>
+                        <input class="form-control" id="prompt" name="prompt" placeholder="Preguntame lo que quieras" required="" type="text" value="">
+                    </div>
+                    <input class="btn btn-default" id="submit" name="submit" type="submit" value="Enter">
+                </form>
+            </div>
+        {% else %}
+            <div id="prompt-div" class="prompt-text navbar-fixed-bottom">
+                <form action="{{ url_for('select_prompt') }}" method="post" class="form" role="form">
+                    <div class="form-group  required">
+                        <label class="control-label" for="prompt">This is an experimental generative AI chatbot. All information should be verified prior to use.</label>
+                        <input class="form-control" id="prompt" name="prompt" placeholder="Preguntame lo que quieras" required="" type="text" value="">
+                    </div>
+                    <input class="btn btn-default" id="submit" name="submit" type="submit" value="Enter">
+                </form>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock  %}

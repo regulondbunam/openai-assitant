@@ -3,7 +3,6 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_NAME = os.environ['DATABASE_NAME']
 
 def get_database():
    """
@@ -16,7 +15,7 @@ def get_database():
 
    client = MongoClient(MONGODB_CONNECTION_URI)
 
-   return client[DATABASE_NAME]
+   return client["chatbot"]
   
 if __name__ == "__main__":   
   
