@@ -17,17 +17,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body h-100">
-                <a href="{{ url_for('chat_user', new_chat=True) }}" class="list-group-item list-group-item-action text-body">New chat</a>
+                <a href="{{ url_for('chat_user', new_chat=True) }}" class="list-group-item list-group-item-action">New chat</a>
                 {% for thread in threads %}
                     <div>
-                        <a href="{{ url_for('view_thread', thread_id=thread['id']) }}" class="list-group-item list-group-item-action text-truncate thread-name text-body" id="thread-name-{{ thread['id'] }}" contenteditable="false">{{ thread['metadata']['name'] }}</a>
+                        <a href="{{ url_for('view_thread', thread_id=thread['id']) }}" class="list-group-item list-group-item-action text-truncate thread-name" id="thread-name-{{ thread['id'] }}" contenteditable="false">{{ thread['metadata']['name'] }}</a>
                         <div class="btn-group">
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                                 ...
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
-                                <li><a class="dropdown-item text-body rename-thread" data-thread-id="{{ thread['id'] }}" role="button" >Rename</a></li>
-                                <li><a class="dropdown-item text-body" href="{{ url_for('delete_thread_route', thread_id=thread['id']) }}" >Delete</a></li>
+                                <li><a class="dropdown-item rename-thread" data-thread-id="{{ thread['id'] }}" role="button" >Rename</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('delete_thread_route', thread_id=thread['id']) }}" >Delete</a></li>
                             </ul>
                         </div>
                     </div>

@@ -48,6 +48,9 @@ img {
 .transition-width {
     transition: width 0.3s;
 }
+.offcanvas-body a, .dropdown-menu>li>a {
+    color: white;
+}
 #offcanvasScrolling{
     width: 235px;
 }
