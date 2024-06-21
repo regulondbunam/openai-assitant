@@ -11,9 +11,15 @@ def get_database():
    Returns:
       pymongo.database.Database: The MongoDB database object.
    """
-   MONGODB_CONNECTION_URI = os.environ['MONGODB_CONNECTION_URI']
+   try:
+      MONGODB_CONNECTION_URI = os.environ['MONGODB_CONNECTION_URI']
+   except KeyError:
+      raise Exception("MONGODB_CONNECTION_URI environment variable is not set.")
 
-   client = MongoClient(MONGODB_CONNECTION_URI)
+   try:
+      client = MongoClient(MONGODB_CONNECTION_URI)
+   except Exception as e:
+      raise Exception(f"Failed to connect to MongoDB: {str(e)}")
 
    return client["chatbot"]
   

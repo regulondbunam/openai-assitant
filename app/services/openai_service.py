@@ -19,24 +19,29 @@ def get_messages(thread_id):
     Returns:
         list: A list of tuples containing filtered messages. Each tuple consists of a user message and the corresponding assistant message.
     """
-    messages = client.beta.threads.messages.list(
-        thread_id=thread_id
-    ).model_dump()
-    
-    filtered_messages = []
-    current_assistant_message = None
+    try:
+        messages = client.beta.threads.messages.list(
+            thread_id=thread_id
+        ).model_dump()
+        
+        filtered_messages = []
+        current_assistant_message = None
 
-    # Iterar a través de los mensajes en orden inverso para encontrar el último mensaje de tipo 'assistant' para cada 'user'
-    for message in messages['data']:
-        if message['role'] == "assistant":
-            if current_assistant_message is None or message['created_at'] > current_assistant_message['created_at']:
-                current_assistant_message = message
-        elif message['role'] == "user":
-            if current_assistant_message is not None:
-                filtered_messages.append((message, current_assistant_message))
-                current_assistant_message = None   
-    filtered_messages = filtered_messages[::-1] 
-    return filtered_messages
+        # Iterate through the messages in reverse order to find the latest assistant message for each user
+        for message in messages['data']:
+            if message['role'] == "assistant":
+                if current_assistant_message is None or message['created_at'] > current_assistant_message['created_at']:
+                    current_assistant_message = message
+            elif message['role'] == "user":
+                if current_assistant_message is not None:
+                    filtered_messages.append((message, current_assistant_message))
+                    current_assistant_message = None   
+        filtered_messages = filtered_messages[::-1] 
+        return filtered_messages
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return []
+
 
 def send_message(message, thread_id):
     """
@@ -49,23 +54,27 @@ def send_message(message, thread_id):
     Returns:
         str: The final results from the assistant.
     """
-    thread_message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=message,
-    )
-    run = client.beta.threads.runs.create_and_poll(
-        thread_id=thread_id,
-        assistant_id=ASSISTANT_ID,
-        instructions="Por favor, dame solo los resultados finales sin explicaciones detalladas.",
-    )
-    if run.status == 'completed': 
-        messages = client.beta.threads.messages.list(
-            thread_id=thread_id
+    try:
+        thread_message = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=message,
         )
-        return messages.model_dump()
-    else:
-        return run.status
+        run = client.beta.threads.runs.create_and_poll(
+            thread_id=thread_id,
+            assistant_id=ASSISTANT_ID,
+            instructions="Por favor, dame solo los resultados finales sin explicaciones detalladas.",
+        )
+        if run.status == 'completed': 
+            messages = client.beta.threads.messages.list(
+                thread_id=thread_id
+            )
+            return messages.model_dump()
+        else:
+            return run.status
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
     
 def evaluate_message(message_id, rating, comment, thread_id):
     """
@@ -80,15 +89,19 @@ def evaluate_message(message_id, rating, comment, thread_id):
     Returns:
         str: The model dump of the updated message.
     """
-    message = client.beta.threads.messages.update(
-        message_id=message_id,
-        thread_id=thread_id,
-        metadata={
-            "rating": rating,
-            "userComment": comment,
-        },
-    )
-    return message.model_dump()
+    try:
+        message = client.beta.threads.messages.update(
+            message_id=message_id,
+            thread_id=thread_id,
+            metadata={
+                "rating": rating,
+                "userComment": comment,
+            },
+        )
+        return message.model_dump()
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
 
 def get_threads(username):
     """
@@ -100,17 +113,20 @@ def get_threads(username):
     Returns:
         list: A list of thread objects associated with the username.
     """
-    dbname = get_database()
-    user = dbname.users.find_one({"user": username})
-    threads = user.get('threads', [])
-    threads_obj = []
-    if threads:
-        for thread in threads:
-            my_thread = client.beta.threads.retrieve(thread).model_dump()
-            threads_obj.append(my_thread)
-        threads = threads_obj
-            
-    return threads
+    try:
+        dbname = get_database()
+        user = dbname.users.find_one({"user": username})
+        threads = user.get('threads', [])
+        threads_obj = []
+        if threads:
+            for thread in threads:
+                my_thread = client.beta.threads.retrieve(thread).model_dump()
+                threads_obj.append(my_thread)
+            threads = threads_obj
+        return threads
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return []
 
 def create_thread(username, prompt):
     """
@@ -123,12 +139,16 @@ def create_thread(username, prompt):
     Returns:
         str: The ID of the created thread.
     """
-    thread = client.beta.threads.create(
-        metadata={"user": username, "name": prompt}
-    )
-    dbname = get_database()
-    dbname.users.update_one({"user": username}, {"$push": {"threads": thread.id}})
-    return thread.id
+    try:
+        thread = client.beta.threads.create(
+            metadata={"user": username, "name": prompt}
+        )
+        dbname = get_database()
+        dbname.users.update_one({"user": username}, {"$push": {"threads": thread.id}})
+        return thread.id
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
 
 def delete_thread(username, thread_id):
     """
@@ -141,10 +161,14 @@ def delete_thread(username, thread_id):
     Returns:
         bool: True if the thread is successfully deleted, False otherwise.
     """
-    dbname = get_database()
-    dbname.users.update_one({"user": username}, {"$pull": {"threads": thread_id}})
-    client.beta.threads.delete(thread_id=thread_id)
-    return True
+    try:
+        dbname = get_database()
+        dbname.users.update_one({"user": username}, {"$pull": {"threads": thread_id}})
+        client.beta.threads.delete(thread_id=thread_id)
+        return True
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return False
 
 def rename_thread(thread_id, name):
     """
@@ -157,8 +181,13 @@ def rename_thread(thread_id, name):
     Returns:
         str: The model dump of the updated thread.
     """
-    thread = client.beta.threads.update(
-        thread_id=thread_id,
-        metadata={"name": name}
-    )
-    return thread.model_dump()
+    try:
+        thread = client.beta.threads.update(
+            thread_id=thread_id,
+            metadata={"name": name}
+        )        
+        return thread.model_dump()
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None

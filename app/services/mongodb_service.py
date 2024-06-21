@@ -1,6 +1,5 @@
 from app.tools.get_database import get_database
-from bson import ObjectId
-                          
+
 db = get_database()
 collection = db.users
 
@@ -11,7 +10,11 @@ def get_users():
     Returns:
         A cursor object containing all the users in the collection.
     """
-    return collection.find()
+    try:
+        return collection.find()
+    except Exception as e:
+        print(f"An error occurred while retrieving users: {e}")
+        return None
 
 def get_user(user_id):
     """
@@ -24,7 +27,11 @@ def get_user(user_id):
         dict: A dictionary representing the user document from the collection.
               Returns None if no user is found with the given ID.
     """
-    return collection.find_one({'user': user_id})
+    try:
+        return collection.find_one({'user': user_id})
+    except Exception as e:
+        print(f"An error occurred while retrieving user: {e}")
+        return None
 
 def put_user(user_data):
     """
@@ -35,5 +42,10 @@ def put_user(user_data):
 
     Returns:
         None
-    """
-    collection.insert_one({"user": user_data.username, "password": user_data.password})
+    """        
+    try:
+        collection.insert_one({"user": user_data.username, "password": user_data.password})
+
+    except Exception as e:
+        print(f"An error occurred while inserting user: {e}")
+
