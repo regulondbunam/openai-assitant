@@ -27,6 +27,7 @@ def get_database():
    Returns:
       pymongo.database.Database: The MongoDB database object.
    """
+   database = None
    try:
       MONGODB_CONNECTION_URI = os.environ['MONGODB_CONNECTION_URI']
    except KeyError:

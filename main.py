@@ -4,6 +4,7 @@ import requests
 from app import create_app
 from app.forms import MessageForm, EvaluationForm
 from app.services.openai_service import get_messages, send_message, evaluate_message, get_threads, create_thread, delete_thread, rename_thread
+from app.services.mongodb_service import get_database
 
 app = create_app()
 
@@ -33,6 +34,17 @@ def internal_server_error(error):
     """
     return render_template('500.html', error=error)
 
+@app.route('/test-db')
+def test_db():
+    try:
+        db = get_database()
+        if db is not None:
+            return jsonify({'message': 'Connected to MongoDB!'})
+        else:
+            return jsonify({'message': 'Failed to connect to MongoDB.'}), 500
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+    
 @app.route('/')
 def index():
     """
@@ -113,7 +125,6 @@ def chat_user():
         return render_template('chat_user.html', **context)
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 @app.route('/chatbot/eval', methods=['GET', 'POST'])
 def get_validation():
@@ -138,7 +149,6 @@ def get_validation():
             
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
     
 @app.route('/new_thread', methods=['POST'])
 def new_thread():
@@ -154,7 +164,6 @@ def new_thread():
         return redirect(url_for('chat_user'))
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 @app.route('/thread', methods=['GET','POST'])
 def view_thread():
@@ -176,7 +185,6 @@ def view_thread():
         return redirect(url_for('chat_user',thread_id=thread_id))
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 @app.route('/send_message', methods=['POST'])
 def send_message_thread():
@@ -205,7 +213,6 @@ def send_message_thread():
         return redirect(url_for('view_thread', thread_id=thread_id))
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 @app.route('/select_prompt', methods=['POST'])
 def select_prompt():
@@ -230,7 +237,6 @@ def select_prompt():
         return redirect(url_for('view_thread', thread_id=thread_id))
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 @app.route('/threads/<thread_id>/rename', methods=['POST'])
 def rename_thread_route(thread_id):
@@ -269,7 +275,6 @@ def delete_thread_route(thread_id):
         return redirect(url_for('chat_user'))
     except Exception as e:
         print(str(e))
-        return render_template('error.html', error=str(e))
 
 if __name__ == '__main__':
     app.run()
