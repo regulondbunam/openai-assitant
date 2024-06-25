@@ -1,7 +1,11 @@
 services:
   mongodb:
-    image: mongo:4.4.6
+    image: mongo:6.0
     container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - "27017:27017"
     volumes:
@@ -13,8 +17,7 @@ services:
       dockerfile: Dockerfile
     container_name: flask-app
     environment:
-      - MONGODB_CONNECTION_URI=mongodb://mongodb:27017
-      - DATABASE_NAME=chatbot
+      MONGODB_CONNECTION_URI: mongodb://mongodb:27017
     depends_on:
       - mongodb
     ports:
@@ -24,6 +27,7 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
+    container_name: nginx
     ports:
       - "80:80"
     depends_on:
