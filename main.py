@@ -38,10 +38,10 @@ def internal_server_error(error):
 def test_db():
     try:
         db = get_database()
-        if db is not None:
-            return jsonify({'message': 'Connected to MongoDB!'})
-        else:
+        if db is None:
             return jsonify({'message': 'Failed to connect to MongoDB.'}), 500
+        else:
+            return jsonify({'message': 'Connected to MongoDB!'})
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     

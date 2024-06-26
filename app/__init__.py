@@ -10,7 +10,10 @@ login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
 def load_user(username):
-    return UserModel.query(username)
+    user = UserModel.query(username)
+    if user is None:
+        return None
+    return user
 
 def create_app():
     app = Flask(__name__)
