@@ -25,12 +25,11 @@ def get_user(user_id):
         dict: A dictionary representing the user document from the collection.
               Returns None if no user is found with the given ID.
     """
-    try:
-        db = get_database()
-        return db.users.find_one({'user': user_id})
-    except Exception as e:
-        print(f"An error occurred while retrieving user: {e}")
-        return None
+    db = get_database()
+    user_doc = db.users.find_one({"user": user_id})
+    if user_doc is None:
+        print(f"No user found for user_id: {user_id}")
+    return user_doc
 
 def put_user(user_data):
     """

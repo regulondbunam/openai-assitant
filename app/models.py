@@ -31,6 +31,9 @@ class UserModel(UserMixin):
             user_id (str): The username of the user.
         """
         user_doc = get_user(user_id)
+        if user_doc is None:
+            print(f"User not found for user_id: {user_id}")
+            return None
         user_data = UserData(
             username=user_doc.get("user"), 
             password=user_doc.get("password"))

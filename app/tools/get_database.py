@@ -39,8 +39,7 @@ def get_database():
          database = client["chatbot"]
          print("Connected to MongoDB.")
       else:
-         database = client.get_database("chatbot")
-         print("Connected to MongoDB 2.")
+         return None
    except Exception as e:
       raise Exception(f"Failed to connect to MongoDB: {str(e)}")
 
