@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     container_name: flask-app
     environment:
-      MONGODB_CONNECTION_URI: mongodb://mongodb:27017
+      MONGODB_CONNECTION_URI: mongodb://root:example@mongodb:27017
     depends_on:
       - mongodb
     ports:
